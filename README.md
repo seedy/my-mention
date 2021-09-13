@@ -48,7 +48,7 @@ I could have kept a single feature branch with commits, as I really implemented 
 2. Integrate linter, because I had forgotten...
 3. Handle API call to fetch mentions
 4. Handle listing of mentions and text highlighting
-5. Add a conclusion to README with some thoughts (I don't count this as part of implementation time)
+5. Add a conclusion to README with some thoughts, cleanup (I don't count this as part of implementation time)
 
 ### Time spent
 
