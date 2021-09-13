@@ -18,7 +18,7 @@ function App() {
         <Box
           display="flex"
           flexDirection="column"
-          alignItems="flex-start"
+          alignItems="center"
           justifyContent="center"
           overflow="hidden"
         >
