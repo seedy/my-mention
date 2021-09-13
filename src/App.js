@@ -1,7 +1,8 @@
 import ButtonLoadMentions from 'components/smart/Button/LoadMentions';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
-
+import MentionsContextProvider from 'components/context/mentions';
+import ListMentions from 'components/smart/List/Mentions';
 
 // COMPONENTS
 function App() {
@@ -13,13 +14,18 @@ function App() {
       maxWidth="md"
       pt={2}
     >
-      <Box
-        display="flex"
-        alignItems="flex-start"
-        justifyContent="center"
-      >
-        <ButtonLoadMentions />
-      </Box>
+      <MentionsContextProvider>
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="flex-start"
+          justifyContent="center"
+          overflow="hidden"
+        >
+          <ButtonLoadMentions />
+          <ListMentions component={Box} width="100%" />
+        </Box>
+      </MentionsContextProvider>
     </Container>
   );
 }

@@ -4,8 +4,10 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
+import Badge from '@material-ui/core/Badge';
 import Box from '@material-ui/core/Box';
 import { useMemo } from 'react';
+import IconSourceType from 'components/smart/Icon/SourceType';
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -15,10 +17,14 @@ const useStyles = makeStyles((theme) => ({
   borderedBox: {
     border: `1px solid ${theme.palette.divider}`,
   },
+  iconAvatarSmall: {
+    width: 24,
+    height: 24,
+  },
 }));
 
 // COMPONENTS
-const ListItemMention = ({ src, date, textPrimary, textSecondary, textTertiary }) => {
+const ListItemMention = ({ src, type, date, textPrimary, textSecondary, textTertiary }) => {
   const classes = useStyles();
 
   const dateReadable = useMemo(
@@ -34,8 +40,21 @@ const ListItemMention = ({ src, date, textPrimary, textSecondary, textTertiary }
 
   return (
     <Box overflow="hidden" className={classes.borderedBox}>
-      <Box m={2} display="flex">
-        <Avatar alt="Source picture" src={src} />
+      <Box m={2} display="flex" alignItems="flex-start">
+        <Badge
+          overlap="circular"
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          badgeContent={(
+            <Avatar classes={{ root: classes.iconAvatarSmall }}>
+              <IconSourceType type={type} />
+            </Avatar>
+        )}
+        >
+          <Avatar alt="Source picture" src={src} />
+        </Badge>
         <Box ml={2} display="flex" flexDirection="column" overflow="hidden">
           <Box width="100%" display="flex" flexDirection="row" justifyContent="space-between">
             <Typography color="textSecondary" variant="h6">{textPrimary}</Typography>
@@ -50,11 +69,24 @@ const ListItemMention = ({ src, date, textPrimary, textSecondary, textTertiary }
 };
 
 ListItemMention.propTypes = {
-  src: PropTypes.string.isRequired,
+  src: PropTypes.string,
+  type: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   textPrimary: PropTypes.string.isRequired,
   textSecondary: PropTypes.string.isRequired,
   textTertiary: PropTypes.string.isRequired,
+  offsets: PropTypes.shape({
+    title: PropTypes.arrayOf(PropTypes.number),
+    description: PropTypes.arrayOf(PropTypes.number),
+  }),
+};
+
+ListItemMention.defaultProps = {
+  src: null,
+  offsets: {
+    title: [],
+    description: [],
+  },
 };
 
 export default ListItemMention;

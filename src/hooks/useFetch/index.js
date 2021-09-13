@@ -1,3 +1,5 @@
+import identity from 'helpers/identity';
+
 import { useCallback, useMemo, useState } from 'react';
 
 // CONSTANTS
@@ -6,7 +8,7 @@ export const DONE = Symbol('DONE');
 
 
 // HOOKS
-export default () => {
+export default (transformFn = identity) => {
   const [status, setStatus] = useState();
 
   const onLoad = useCallback(
@@ -28,9 +30,10 @@ export default () => {
       onLoad();
       const response = await fetch(resource, options);
       onDone();
-      return response.json();
+      const json = await response.json();
+      return transformFn(json);
     },
-    [onLoad, onDone],
+    [onLoad, onDone, transformFn],
   );
 
   return useMemo(
