@@ -28,7 +28,7 @@ const ListMentions = (props) => {
               textPrimary={sourceUrl}
               textSecondary={title}
               textTertiary={description}
-              offsets={offsets}
+              textTertiaryOffsets={offsets.description}
             />
         ))}
     </List>

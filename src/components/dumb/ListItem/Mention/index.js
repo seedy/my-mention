@@ -1,13 +1,23 @@
 import PropTypes from 'prop-types';
 
+import chunk from 'helpers/chunk';
+import stringReplaceJsx from 'helpers/stringReplaceJsx';
+
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useMemo } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import Box from '@material-ui/core/Box';
-import { useMemo } from 'react';
 import IconSourceType from 'components/smart/Icon/SourceType';
+
+// HELPERS
+// we filter out utf-16 code units, then group offsets by pair (start-length)
+const filterPairOffsets = (offsets) => chunk(offsets.filter((_, index) => {
+  const indexModulo = index % 4;
+  return indexModulo === 0 || indexModulo === 2;
+}), 2);
 
 // HOOKS
 const useStyles = makeStyles((theme) => ({
@@ -21,10 +31,15 @@ const useStyles = makeStyles((theme) => ({
     width: 24,
     height: 24,
   },
+  markBold: {
+    fontWeight: theme.typography.fontWeightBold,
+  },
 }));
 
 // COMPONENTS
-const ListItemMention = ({ src, type, date, textPrimary, textSecondary, textTertiary }) => {
+const ListItemMention = ({
+  src, type, date, textPrimary, textSecondary, textTertiary, textTertiaryOffsets,
+}) => {
   const classes = useStyles();
 
   const dateReadable = useMemo(
@@ -36,6 +51,20 @@ const ListItemMention = ({ src, type, date, textPrimary, textSecondary, textTert
       },
     ),
     [date],
+  );
+
+  const highlightedText = useMemo(
+    () => {
+      const filteredPairedOffsets = filterPairOffsets(textTertiaryOffsets);
+      return filteredPairedOffsets
+        .reduce((aggr, [start, length]) => {
+          const substring = aggr.substring(start, start + length);
+          return stringReplaceJsx(aggr, substring, (match, i) => (
+            <mark className={classes.markBold} key={i}>{match}</mark>
+          ));
+        }, textTertiary);
+    },
+    [textTertiary, textTertiaryOffsets, classes],
   );
 
   return (
@@ -61,7 +90,7 @@ const ListItemMention = ({ src, type, date, textPrimary, textSecondary, textTert
             <Typography color="textSecondary" variant="h6">{dateReadable}</Typography>
           </Box>
           <Typography className={classes.titleBold} color="textPrimary" variant="h6" noWrap>{textSecondary}</Typography>
-          <Typography color="textSecondary" variant="h6">{textTertiary}</Typography>
+          <Typography color="textSecondary" variant="h6">{highlightedText}</Typography>
         </Box>
       </Box>
     </Box>
@@ -75,18 +104,12 @@ ListItemMention.propTypes = {
   textPrimary: PropTypes.string.isRequired,
   textSecondary: PropTypes.string.isRequired,
   textTertiary: PropTypes.string.isRequired,
-  offsets: PropTypes.shape({
-    title: PropTypes.arrayOf(PropTypes.number),
-    description: PropTypes.arrayOf(PropTypes.number),
-  }),
+  textTertiaryOffsets: PropTypes.arrayOf(PropTypes.number),
 };
 
 ListItemMention.defaultProps = {
   src: null,
-  offsets: {
-    title: [],
-    description: [],
-  },
+  textTertiaryOffsets: [],
 };
 
 export default ListItemMention;
