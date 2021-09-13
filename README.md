@@ -2,6 +2,17 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Secrets integration
+
+Create the following file `secrets.js` at project's root:
+```
+export const TOKEN = 'yourtoken'
+export const ACCOUNT_ID = 'account_id'
+export const ALERT_ID = 'alert_id'
+```
+
+Then replace placeholders.
+
 ## Launching the app
 
 ### CORS handling
